@@ -4,9 +4,11 @@ const fs = require('fs')
 const https = require('https')
 const mysql = require('mysql')
 const CronJob = require('cron').CronJob
+const cors = require('cors')
 
 const app = express()
 const port = 3000
+app.use(cors())
 
 const pool = mysql.createPool({
   host: 'localhost',
@@ -48,9 +50,12 @@ function update() {
     }
   })
   
+  let id = 0;
   for (item of result.Munka1) {
-    pool.query('REPLACE INTO data VALUES (\"'+item.manufacturer+'\", \"'+item.ndn+'\", \"'+item.ean+'\", \"'+item.category+'\", \"'+item.name+'\", \"'+item.brand+'\", '+item.qtn+', \"'+item.qtntype+'\", '+item.price+')', (err, rows, field) => {})
+    pool.query('REPLACE INTO data VALUES ('+id+' ,\"'+item.manufacturer+'\", \"'+item.ndn+'\", \"'+item.ean+'\", \"'+item.category+'\", \"'+item.name+'\", \"'+item.brand+'\", '+item.qtn+', \"'+item.qtntype+'\", '+item.price+')', (err, rows, field) => {})
+    id++
   }
+
 }
 
 app.get('/update', (req, res) => {
